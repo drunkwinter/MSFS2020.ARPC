@@ -3,17 +3,17 @@ MSFS2020.ARPC is an open-source patch that fixes the sky colors in Microsoft Fli
 
 This tool patches the atmospheric coefficients in-memory, without modifying any game files. As a result, it prevents the patch from being overwritten or the game breaking with updates and offers a simpler installation and removal process.
 
-This tool owes its existence to the discovery made by [Biology2394](https://forums.flightsimulator.com/u/Biology2394)/[FarukEroglu2048](https://github.com/FarukEroglu2048). See [credits](#credits)
+This tool owes its existence to the discovery made by [Biology2394](https://forums.flightsimulator.com/u/Biology2394)/[FarukEroglu2048](https://github.com/FarukEroglu2048). See [credits](#credits).
 
 ## Getting Started
 1. Download the latest release of [MSFS2020.ARPC.zip](https://github.com/drunkwinter/MSFS2020.ARPC/releases/latest/download/MSFS2020.ARPC.zip).
 2. Drag and drop the `dinput8.dll` and `MSFS2020.ARPC.asi` files from the archive into your MSFS installation directory.
 
 > [!NOTE]
-> The installation path may vary depending on where you obtained MSFS:
+> The installation path containing `FlightSimulator.exe` may vary depending on where you obtained MSFS:
 >
 > **MS Store**: `C:\Program Files\WindowsApps\Microsoft.FlightSimulator_1.34.16.0_x64__8wekyb3d8bbwe`<br />
-> **Steam**: `C:\Program Files (x86)\Steam\steamapps\common\MicrosoftFlightSimulator`
+> **Steam**: `C:\Program Files (x86)\Steam\steamapps\common\MicrosoftFlightSimulator` <br />
 
 ## Screenshots
 <p align="middle">
@@ -27,7 +27,7 @@ This tool owes its existence to the discovery made by [Biology2394](https://foru
     <img src="https://github.com/drunkwinter/MSFS2020.ARPC/assets/38593134/76e2bd8a-554b-4239-836e-55a69b8f45df" width="49%">
 </p>
 
-<img src="https://github.com/drunkwinter/MSFS2020.ARPC/assets/38593134/db0821a3-2d7d-4528-ad76-a8d3ed86e6c3" width="100%">
+<img src="https://github.com/drunkwinter/MSFS2020.ARPC/assets/38593134/db0821a3-2d7d-4528-ad76-a8d3ed86e6c3" width="98%">
 
 <p align="middle">
     <img src="https://github.com/drunkwinter/MSFS2020.ARPC/assets/38593134/76e2bd8a-554b-4239-836e-55a69b8f45df" width="32%">
