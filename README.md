@@ -13,9 +13,9 @@ This tool owes its existence to the discovery made by [Biology2394](https://foru
 > The installation path containing `FlightSimulator.exe` may vary depending on where you obtained  and installed MSFS:
 >
 > #### MS Store <br />
-> `C:\Program Files\WindowsApps\Microsoft.FlightSimulator_1.34.16.0_x64__8wekyb3d8bbwe`<br />
-> `C:\Users\[Your User Name]\AppData\Local\Packages\ Microsoft.FlightSimulator_8wekyb3d8bbwe`<br /><br />
-> **Steam** <br />
+> - `C:\Program Files\WindowsApps\Microsoft.FlightSimulator_1.34.16.0_x64__8wekyb3d8bbwe`<br />
+> - `C:\Users\[Your User Name]\AppData\Local\Packages\ Microsoft.FlightSimulator_8wekyb3d8bbwe`<br /><br />
+> #### Steam <br />
 > `C:\Program Files (x86)\Steam\steamapps\common\MicrosoftFlightSimulator`<br />
 
 ## Screenshots
