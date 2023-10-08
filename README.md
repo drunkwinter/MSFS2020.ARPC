@@ -10,10 +10,13 @@ This tool owes its existence to the discovery made by [Biology2394](https://foru
 2. Drag and drop the `dinput8.dll` and `MSFS2020.ARPC.asi` files from the archive into your MSFS installation directory.
 
 > [!NOTE]
-> The installation path containing `FlightSimulator.exe` may vary depending on where you obtained MSFS:
+> The installation path containing `FlightSimulator.exe` may vary depending on where you obtained  and installed MSFS:
 >
-> **MS Store**: `C:\Program Files\WindowsApps\Microsoft.FlightSimulator_1.34.16.0_x64__8wekyb3d8bbwe`<br />
-> **Steam**: `C:\Program Files (x86)\Steam\steamapps\common\MicrosoftFlightSimulator` <br />
+> **MS Store**:
+> `C:\Program Files\WindowsApps\Microsoft.FlightSimulator_1.34.16.0_x64__8wekyb3d8bbwe`<br />
+> `C:\Users\[Your User Name]\AppData\Local\Packages\ Microsoft.FlightSimulator_8wekyb3d8bbwe`<br />
+> **Steam**:
+> `C:\Program Files (x86)\Steam\steamapps\common\MicrosoftFlightSimulator`<br />
 
 ## Screenshots
 <p align="middle">
