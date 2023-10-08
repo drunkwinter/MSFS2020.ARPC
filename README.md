@@ -14,9 +14,9 @@ This tool owes its existence to the discovery made by [Biology2394](https://foru
 >
 > #### MS Store
 > - `C:\Program Files\WindowsApps\Microsoft.FlightSimulator_1.34.16.0_x64__8wekyb3d8bbwe`
-> - `C:\Users\[Your User Name]\AppData\Local\Packages\ Microsoft.FlightSimulator_8wekyb3d8bbwe`<br />
-> #### Steam <br />
-> - `C:\Program Files (x86)\Steam\steamapps\common\MicrosoftFlightSimulator`<br />
+> - `C:\Users\[Your User Name]\AppData\Local\Packages\ Microsoft.FlightSimulator_8wekyb3d8bbwe`
+> #### Steam
+> - `C:\Program Files (x86)\Steam\steamapps\common\MicrosoftFlightSimulator`
 
 ## Screenshots
 <p align="middle">
