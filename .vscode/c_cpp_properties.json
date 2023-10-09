@@ -2,16 +2,11 @@
     "configurations": [
         {
             "name": "Win32",
-            "includePath": [
-                "${workspaceFolder}/dependencies"
-            ],
-            "defines": [],
+            "includePath": ["${workspaceFolder}/dependencies"],
             "windowsSdkVersion": "10.0.22621.0",
-            "compilerPath": "cl.exe",
             "cStandard": "c17",
             "cppStandard": "c++20",
-            "intelliSenseMode": "windows-msvc-x64",
-            "compilerArgs": []
+            "intelliSenseMode": "windows-msvc-x64"
         }
     ],
     "version": 4

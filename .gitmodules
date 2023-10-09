@@ -1,3 +1,6 @@
 [submodule "dependencies/Hooking.Patterns"]
 	path = dependencies/Hooking.Patterns
 	url = https://github.com/ThirteenAG/Hooking.Patterns
+[submodule "dependencies/IniReader"]
+	path = dependencies/IniReader
+	url = https://github.com/ThirteenAG/IniReader

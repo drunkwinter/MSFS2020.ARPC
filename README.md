@@ -7,7 +7,7 @@ This tool owes its existence to the discovery made by [Biology2394](https://foru
 
 ## Getting Started
 1. Download the latest release of [MSFS2020.ARPC.zip](https://github.com/drunkwinter/MSFS2020.ARPC/releases/latest/download/MSFS2020.ARPC.zip).
-2. Drag and drop the `dinput8.dll` and `MSFS2020.ARPC.asi` files from the archive into your MSFS installation directory.
+2. Drag and drop the `dinput8.dll`, `MSFS2020.ARPC.asi` and (optional) `MSFS2020.ARPC.ini` files from the archive into your MSFS installation directory.
 
 > [!NOTE]
 > The installation path containing `FlightSimulator.exe` may vary depending on where you obtained  and installed MSFS:
@@ -18,6 +18,27 @@ This tool owes its existence to the discovery made by [Biology2394](https://foru
 > - `C:\Program Files\WindowsApps\Microsoft.FlightSimulator_1.34.16.0_x64__8wekyb3d8bbwe`
 > #### Steam
 > - `C:\Program Files (x86)\Steam\steamapps\common\MicrosoftFlightSimulator`
+
+## Configuration
+`MSFS2020.ARPC.ini` allows you to customize the patch by changing coefficients and/or enabling the in-game toggle functionality.
+
+> [!WARNING]
+> Don't blank the values, instead remove the lines for default settings.
+
+#### `[COEFFICIENTS]`
+
+Adjust the `RED`, `GREEN`, `BLUE` color coefficients for the sky rendering.
+
+#### `[TOGGLE]`
+
+**ENABLED**: Enable or disable the in-game toggle functionality. (default: false)
+
+**KEY_CODE**: The key to use for the toggle (default: `0x2D` for the INSERT key).
+
+> [!NOTE]
+> See https://learn.microsoft.com/en-us/windows/win32/inputdev/virtual-key-codes for all the key codes.
+
+**HOLD_ALT**, **HOLD_CTRL**, **HOLD_SHIFT**: Modifier key requirements (default: false).
 
 ## Screenshots
 <p align="middle">
