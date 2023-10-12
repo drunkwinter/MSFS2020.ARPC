@@ -11,34 +11,48 @@ This tool owes its existence to the discovery made by [Biology2394](https://foru
 
 > [!NOTE]
 > The installation path containing `FlightSimulator.exe` may vary depending on where you obtained  and installed MSFS:
->
-> #### MS Store
-> - `C:\XboxGames\Microsoft Flight Simulator\Content`
-> - `C:\Users\[Your User Name]\AppData\Local\Packages\ Microsoft.FlightSimulator_8wekyb3d8bbwe`
-> - `C:\Program Files\WindowsApps\Microsoft.FlightSimulator_1.34.16.0_x64__8wekyb3d8bbwe`
-> #### Steam
-> - `C:\Program Files (x86)\Steam\steamapps\common\MicrosoftFlightSimulator`
+
+#### MS Store
+> [!NOTE]
+> This folder might not exist if you have an older install, convert to the modern install.
+> (See https://parallel42.com/blogs/wiki/converting-my-sim-install-from-legacy-to-modern)
+- `C:\XboxGames\Microsoft Flight Simulator\Content`
+> [!WARNING]
+> To access this folder you need to take ownership of the `WindowsApps` folder.
+> (See https://forums.flightsimulator.com/t/take-ownership-of-the-windows-apps-folders/388969)
+- `C:\Program Files\WindowsApps\Microsoft.FlightSimulator_1.34.16.0_x64__8wekyb3d8bbwe`
+#### Steam
+- `C:\Program Files (x86)\Steam\steamapps\common\MicrosoftFlightSimulator`
 
 ## Configuration
-`MSFS2020.ARPC.ini` allows you to customize the patch by changing coefficients and/or enabling the in-game toggle functionality.
+`MSFS2020.ARPC.ini` allows you to customize the patch.
 
-> [!WARNING]
-> Don't blank the values, instead remove the lines for default settings.
+```ini
+; WARNING: Do not leave out the values; remove the entire line instead.
+;          Entering invalid values may cause the game to crash.
 
-#### `[COEFFICIENTS]`
+[COEFFICIENTS]
+RED = 0.002723
+GREEN = 0.001831
+BLUE = -0.000083096
 
-Adjust the `RED`, `GREEN`, `BLUE` color coefficients for the sky rendering.
+; Enable the live editing functionality
+; When enabled, changes to the coefficients reflect in-game when saved
+LIVE_EDITING_ENABLED = false ; Set to 'true' to enable live editing
 
-#### `[TOGGLE]`
 
-**ENABLED**: Enable or disable the in-game toggle functionality. (default: false)
+[TOGGLE]
+; Enable the toggle functionality
+ENABLED = false ; Set to 'true' to enable the toggle feature
 
-**KEY_CODE**: The key to use for the toggle (default: `0x2D` for the INSERT key).
+; Key code for toggling (See https://learn.microsoft.com/en-us/windows/win32/inputdev/virtual-key-codes)
+KEY_CODE = 0x2D ; INSERT
 
-> [!NOTE]
-> See https://learn.microsoft.com/en-us/windows/win32/inputdev/virtual-key-codes for all the key codes.
-
-**HOLD_ALT**, **HOLD_CTRL**, **HOLD_SHIFT**: Modifier key requirements (default: false).
+; Enable or disable key modifiers
+HOLD_ALT = false ; Set to 'true' to use Alt as a modifier
+HOLD_CTRL = true ; Set to 'false' to disable Ctrl as a modifier
+HOLD_SHIFT = false ; Set to 'true' to use Shift as a modifier
+```
 
 ## Screenshots
 <p align="middle">
@@ -52,7 +66,9 @@ Adjust the `RED`, `GREEN`, `BLUE` color coefficients for the sky rendering.
     <img src="https://github.com/drunkwinter/MSFS2020.ARPC/assets/38593134/76e2bd8a-554b-4239-836e-55a69b8f45df" width="49%">
 </p>
 
-<img src="https://github.com/drunkwinter/MSFS2020.ARPC/assets/38593134/db0821a3-2d7d-4528-ad76-a8d3ed86e6c3" width="98%">
+<p align="middle">
+    <img src="https://github.com/drunkwinter/MSFS2020.ARPC/assets/38593134/db0821a3-2d7d-4528-ad76-a8d3ed86e6c3" width="98%">
+</p>
 
 <p align="middle">
     <img src="https://github.com/drunkwinter/MSFS2020.ARPC/assets/38593134/76e2bd8a-554b-4239-836e-55a69b8f45df" width="32%">
@@ -70,7 +86,7 @@ Run with PowerShell:
 ./build.ps1
 ```
 > [!NOTE]
-> The build files are located in `./build`
+> The build files are located in `./build/`
 
 ## Credits
 ##### ARPC
