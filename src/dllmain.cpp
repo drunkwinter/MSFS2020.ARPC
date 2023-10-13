@@ -105,7 +105,13 @@ void init() {
 
     bool patch_enabled = true;
 
+    if (!Config::live_editing_enabled && !Config::toggle_enabled) {
+        return;
+    }
+
     while (true) {
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+
         if (hotkey_pressed) {
             hotkey_pressed = false;
 
