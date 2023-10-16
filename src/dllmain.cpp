@@ -3,13 +3,73 @@
 #pragma comment(lib, "user32.lib")
 
 #include <windows.h>
+
+#include <array>
+#include <atomic>
+#include <filesystem>
+#include <string>
+
 #include "Hooking.Patterns\Hooking.Patterns.h"
-#include "IniReader\IniReader.h"
+#include "ini_file.hpp"
 
-std::atomic<bool> hotkey_pressed(false);
-std::atomic<bool> ini_file_changed(false);
+static HINSTANCE dll_module;
 
-inline void listen_for_hotkey(int key, int modifiers) {
+std::atomic hotkey_pressed(false);
+std::atomic ini_file_changed(false);
+
+void show_warning(const std::string& message) {
+    MessageBoxA(nullptr, message.c_str(), "MSFS2020.ARPC", MB_OK | MB_ICONWARNING | MB_SYSTEMMODAL);
+}
+
+namespace Patch {
+    using Coefficients = std::array<float, 3>;
+    enum Status { SUCCESS, ERROR_PATTERN_NOT_FOUND };
+    auto is_enabled = false;
+
+    namespace {
+        float* ptr_coefficients;
+        Coefficients default_coefficients;
+        Coefficients new_coefficients;
+    }
+
+    auto init(Coefficients custom_coefficients) {
+        auto pattern = hook::pattern("C3 64 2A 3A E3 8B F6 3A 07 42 B2 38");
+
+        if (pattern.empty()) {
+            return Status::ERROR_PATTERN_NOT_FOUND;
+        }
+
+        ptr_coefficients = pattern.get_first<float>();
+        std::copy(ptr_coefficients, ptr_coefficients + 3, default_coefficients.begin());
+        new_coefficients = custom_coefficients;
+
+        return Status::SUCCESS;
+    }
+
+    void update(Coefficients custom_coefficients) {
+        new_coefficients = custom_coefficients;
+    }
+
+    void apply() {
+        std::copy(new_coefficients.begin(), new_coefficients.end(), ptr_coefficients);
+    }
+
+    void enable() {
+        std::copy(new_coefficients.begin(), new_coefficients.end(), ptr_coefficients);
+        is_enabled = true;
+    }
+
+    void disable() {
+        std::copy(default_coefficients.begin(), default_coefficients.end(), ptr_coefficients);
+        is_enabled = false;
+    }
+
+    void toggle() {
+        is_enabled ? disable() : enable();
+    }
+}
+
+void listen_for_hotkey(int key, int modifiers) {
     if (RegisterHotKey(nullptr, 1, modifiers, key)) {
         MSG msg;
         while (GetMessage(&msg, nullptr, 0, 0)) {
@@ -20,21 +80,20 @@ inline void listen_for_hotkey(int key, int modifiers) {
     }
 }
 
-inline void listen_for_filechange(const char* ini_file_path) {
-    auto handle = FindFirstChangeNotificationA(".", FALSE, FILE_NOTIFY_CHANGE_LAST_WRITE);
+void listen_for_filechange(const std::string& ini_path) {
+    const auto handle = FindFirstChangeNotificationA(".", FALSE, FILE_NOTIFY_CHANGE_LAST_WRITE);
 
     if (handle == INVALID_HANDLE_VALUE) {
         return;
     }
 
-    auto last_modified_time = std::filesystem::last_write_time(ini_file_path);
+    auto last_modified_time = std::filesystem::last_write_time(ini_path);
 
     while (WaitForSingleObject(handle, INFINITE) == WAIT_OBJECT_0) {
-        const auto current_modified_time = std::filesystem::last_write_time(ini_file_path);
+        const auto current_modified_time = std::filesystem::last_write_time(ini_path);
 
         if (current_modified_time != last_modified_time) {
             last_modified_time = current_modified_time;
-
             ini_file_changed = true;
         }
 
@@ -42,70 +101,55 @@ inline void listen_for_filechange(const char* ini_file_path) {
     }
 }
 
-inline void show_warning(const char* message) {
-    MessageBoxA(nullptr, message, "MSFS2020.ARPC", MB_OK | MB_ICONWARNING | MB_SYSTEMMODAL);
+auto get_ini_path() {
+    char module_path[MAX_PATH];
+    GetModuleFileNameA(dll_module, module_path, sizeof(module_path));
+    return std::filesystem::path(module_path).replace_extension(".ini").string();
 }
 
-class Config {
-public:
-    Config() {
-        update();
-    }
-
-    inline static bool live_editing_enabled;
-    inline static bool toggle_enabled;
-    inline static int toggle_key;
-    inline static int toggle_modifiers;
-    inline static float coefficients[3];
-
-    inline static constexpr const char* ini_path = "./MSFS2020.ARPC.ini";
-
-    static void update() {
-        CIniReader iniReader("");
-
-        live_editing_enabled = iniReader.ReadBoolean("COEFFICIENTS", "LIVE_EDITING_ENABLED", FALSE);
-
-        coefficients[0] = iniReader.ReadFloat("COEFFICIENTS", "RED", 0.002723f);
-        coefficients[1] = iniReader.ReadFloat("COEFFICIENTS", "GREEN", 0.001831f);
-        coefficients[2] = iniReader.ReadFloat("COEFFICIENTS", "BLUE", -0.000083096f);
-
-        toggle_enabled = iniReader.ReadBoolean("TOGGLE", "ENABLED", FALSE);
-        toggle_key = iniReader.ReadInteger("TOGGLE", "KEY_CODE", 0x2D);
-        toggle_modifiers = MOD_NOREPEAT
-            | (iniReader.ReadBoolean("TOGGLE", "HOLD_ALT", FALSE) * MOD_ALT)
-            | (iniReader.ReadBoolean("TOGGLE", "HOLD_CTRL", FALSE) * MOD_CONTROL)
-            | (iniReader.ReadBoolean("TOGGLE", "HOLD_SHIFT", FALSE) * MOD_SHIFT);
-    }
-};
+auto get_ini_coefficients(IniFile ini) {
+    const Patch::Coefficients coefficients = {
+        ini.get("COEFFICIENTS", "RED", 0.002723f),
+        ini.get("COEFFICIENTS", "GREEN", 0.001831f),
+        ini.get("COEFFICIENTS", "BLUE", -0.000083096f),
+    };
+    return coefficients;
+}
 
 void init() {
-    auto pattern = hook::pattern("C3 64 2A 3A E3 8B F6 3A 07 42 B2 38");
+    const auto ini_path = get_ini_path();
 
-    if (pattern.empty()) {
-        show_warning("Could not find the coefficients pattern! No changes were made.");
+    IniFile ini(ini_path);
+
+    const auto status = Patch::init(get_ini_coefficients(ini));
+
+    if (status == Patch::ERROR_PATTERN_NOT_FOUND) {
+        show_warning("Could not find the coefficients pattern! No changes were made." + std::string());
         return;
     }
 
-    const auto coefficients = pattern.get_first<float>();
-    const float default_coefficients[] = {coefficients[0], coefficients[1], coefficients[2]};
+    Patch::enable();
 
-    Config config{};
+    const auto live_editing_enabled = ini.get("COEFFICIENTS", "LIVE_EDITING_ENABLED", false);
+    const auto toggle_enabled = ini.get("TOGGLE", "ENABLED", false);
 
-    std::copy(std::begin(Config::coefficients), std::end(Config::coefficients), coefficients);
-
-    if (Config::live_editing_enabled) {
-        std::thread file_thread(listen_for_filechange, Config::ini_path);
+    if (live_editing_enabled) {
+        std::thread file_thread(listen_for_filechange, ini_path);
         file_thread.detach();
     }
 
-    if (Config::toggle_enabled) {
-        std::thread input_thread(listen_for_hotkey, Config::toggle_key, Config::toggle_modifiers);
+    if (toggle_enabled) {
+        const auto hot_key = ini.get("TOGGLE", "KEY_CODE", 0x2D);
+        const auto modifiers = MOD_NOREPEAT
+            | (ini.get("TOGGLE", "HOLD_ALT", false) * MOD_ALT)
+            | (ini.get("TOGGLE", "HOLD_CTRL", false) * MOD_CONTROL)
+            | (ini.get("TOGGLE", "HOLD_SHIFT", false) * MOD_SHIFT);
+
+        std::thread input_thread(listen_for_hotkey, hot_key, modifiers);
         input_thread.detach();
     }
 
-    bool patch_enabled = true;
-
-    if (!Config::live_editing_enabled && !Config::toggle_enabled) {
+    if (!live_editing_enabled && !toggle_enabled) {
         return;
     }
 
@@ -114,23 +158,16 @@ void init() {
 
         if (hotkey_pressed) {
             hotkey_pressed = false;
-
-            patch_enabled = !patch_enabled;
-
-            if (patch_enabled) {
-                std::copy(std::begin(Config::coefficients), std::end(Config::coefficients), coefficients);
-            } else {
-                std::copy(std::begin(default_coefficients), std::end(default_coefficients), coefficients);
-            }
+            Patch::toggle();
         }
 
         if (ini_file_changed) {
             ini_file_changed = false;
 
-            Config::update();
+            Patch::update(get_ini_coefficients(ini));
 
-            if (patch_enabled) {
-                std::copy(std::begin(Config::coefficients), std::end(Config::coefficients), coefficients);
+            if (Patch::is_enabled) {
+                Patch::apply();
             }
         }
     }
@@ -138,10 +175,11 @@ void init() {
 
 BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved) {
     if (fdwReason == DLL_PROCESS_ATTACH) {
+        dll_module = hinstDLL;
         DisableThreadLibraryCalls(hinstDLL);
         std::thread main_thread(init);
         main_thread.detach();
     }
 
-    return TRUE;
+    return true;
 }

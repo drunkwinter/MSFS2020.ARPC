@@ -33,3 +33,6 @@
 
 # Build
 build
+
+# Annoying file associations
+.vscode/settings.json
