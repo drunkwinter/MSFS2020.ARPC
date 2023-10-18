@@ -1,7 +1,10 @@
 # MSFS2020.ARPC
+> [!NOTE]
+> **Microsoft has confirmed that this issue will be fixed in SU14 before the end of the year.**
+
 MSFS2020.ARPC is an open-source patch that fixes the sky colors in Microsoft Flight Simulator 2020 (MSFS2020) by replacing atmospheric coefficients, resulting in a more realistic sky rendering.
 
-This tool patches the atmospheric coefficients in-memory, without modifying any game files. As a result, it prevents the patch from being overwritten or the game breaking with updates and offers a simpler installation and removal process.
+This tool patches the atmospheric coefficients in-memory, without modifying any game files. As a result, it prevents the patch from being overwritten with updates and offers a simpler installation and removal process.
 
 This tool owes its existence to the discovery made by [Biology2394](https://forums.flightsimulator.com/u/Biology2394)/[FarukEroglu2048](https://github.com/FarukEroglu2048). See [credits](#credits).
 
@@ -9,19 +12,19 @@ This tool owes its existence to the discovery made by [Biology2394](https://foru
 1. Download the latest release of [MSFS2020.ARPC.zip](https://github.com/drunkwinter/MSFS2020.ARPC/releases/latest/download/MSFS2020.ARPC.zip).
 2. Drag and drop the `dinput8.dll`, `MSFS2020.ARPC.asi` and (optional) `MSFS2020.ARPC.ini` files from the archive into your MSFS installation directory.
 
-> [!NOTE]
-> The installation path containing `FlightSimulator.exe` may vary depending on where you obtained  and installed MSFS:
+**The installation path containing `FlightSimulator.exe` may vary depending on where you obtained and installed MSFS:**
 
-#### MS Store
-> [!NOTE]
-> This folder might not exist if you have an older install, convert to the modern install.
-> (See https://parallel42.com/blogs/wiki/converting-my-sim-install-from-legacy-to-modern)
+### MS Store
 - `C:\XboxGames\Microsoft Flight Simulator\Content`
-> [!WARNING]
-> To access this folder you need to take ownership of the `WindowsApps` folder.
-> (See https://forums.flightsimulator.com/t/take-ownership-of-the-windows-apps-folders/388969)
+     > [!NOTE]
+     > This folder might not exist if you have an older install, convert to the modern install. <br />
+     > (See https://parallel42.com/blogs/wiki/converting-my-sim-install-from-legacy-to-modern)
+
 - `C:\Program Files\WindowsApps\Microsoft.FlightSimulator_1.34.16.0_x64__8wekyb3d8bbwe`
-#### Steam
+     > [!IMPORTANT]
+     > To access this folder you need to take ownership of the `WindowsApps` folder. <br />
+     > (See https://forums.flightsimulator.com/t/take-ownership-of-the-windows-apps-folders/388969)
+### Steam
 - `C:\Program Files (x86)\Steam\steamapps\common\MicrosoftFlightSimulator`
 
 ## Configuration
