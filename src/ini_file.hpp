@@ -1,28 +1,21 @@
 class IniFile {
 public:
-    IniFile(const std::string& ini_path) : ini_path(ini_path.c_str()) { }
+    IniFile(const std::string_view ini_path) : ini_path(ini_path.data()) { }
 
     template <typename T>
-    auto get(const char* section, const char* key, T default_value) const
+    T get(const std::string_view section, const std::string_view key, const T default_value) const
     {
         if constexpr (std::is_same_v<T, std::string>) {
             char buffer[255];
-            GetPrivateProfileStringA(section, key, default_value.c_str(), buffer, sizeof(buffer), ini_path);
+            GetPrivateProfileStringA(section.data(), key.data(), default_value.data(), buffer, sizeof(buffer), ini_path);
             std::string str{buffer};
-            if (const auto idx = str.find(" "); idx != std::string::npos) {
+            if (const auto idx = str.find(" "); idx != str.npos) {
                 str.erase(idx, -1);
             }
-            if (const auto idx = str.find(";"); idx != std::string::npos) {
+            if (const auto idx = str.find(";"); idx != str.npos) {
                 str.erase(idx, -1);
             }
             return str;
-        }
-
-        if constexpr (std::is_same_v<T, const char*>) {
-            const auto str = get(section, key, std::string{default_value});
-            char *cstr = new char[str.size() + 1];
-            strcpy(cstr, str.c_str());
-            return cstr;
         }
 
         if constexpr (std::is_same_v<T, bool>) {
@@ -35,7 +28,7 @@ public:
         }
 
         if constexpr (std::is_same_v<T, int>) {
-            return GetPrivateProfileIntA(section, key, default_value, ini_path);
+            return GetPrivateProfileIntA(section.data(), key.data(), default_value, ini_path);
         }
     }
 private:

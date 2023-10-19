@@ -1,4 +1,5 @@
 #define WIN32_LEAN_AND_MEAN
+#define NOMINMAX
 
 #pragma comment(lib, "user32.lib")
 
@@ -17,8 +18,8 @@ static HINSTANCE dll_module;
 std::atomic hotkey_pressed(false);
 std::atomic ini_file_changed(false);
 
-void show_warning(const std::string& message) {
-    MessageBoxA(nullptr, message.c_str(), "MSFS2020.ARPC", MB_OK | MB_ICONWARNING | MB_SYSTEMMODAL);
+void show_warning(const std::string_view message) {
+    MessageBoxA(nullptr, message.data(), "MSFS2020.ARPC", MB_OK | MB_ICONWARNING | MB_SYSTEMMODAL);
 }
 
 namespace Patch {
@@ -32,7 +33,7 @@ namespace Patch {
         Coefficients new_coefficients;
     }
 
-    auto init(Coefficients custom_coefficients) {
+    auto init(const Coefficients& custom_coefficients) {
         auto pattern = hook::pattern("C3 64 2A 3A E3 8B F6 3A 07 42 B2 38");
 
         if (pattern.empty()) {
@@ -77,10 +78,12 @@ void listen_for_hotkey(int key, int modifiers) {
                 hotkey_pressed = true;
             }
         }
+    } else {
+        show_warning("The specified hotkey could not be registered. The toggle feature has been disabled.");
     }
 }
 
-void listen_for_filechange(const std::string& ini_path) {
+void listen_for_filechange(const std::string_view ini_path) {
     const auto handle = FindFirstChangeNotificationA(".", FALSE, FILE_NOTIFY_CHANGE_LAST_WRITE);
 
     if (handle == INVALID_HANDLE_VALUE) {
@@ -107,7 +110,7 @@ auto get_ini_path() {
     return std::filesystem::path(module_path).replace_extension(".ini").string();
 }
 
-auto get_ini_coefficients(IniFile ini) {
+auto get_ini_coefficients(const IniFile& ini) {
     const Patch::Coefficients coefficients = {
         ini.get("COEFFICIENTS", "RED", 0.002723f),
         ini.get("COEFFICIENTS", "GREEN", 0.001831f),
@@ -124,7 +127,13 @@ void init() {
     const auto status = Patch::init(get_ini_coefficients(ini));
 
     if (status == Patch::ERROR_PATTERN_NOT_FOUND) {
-        show_warning("Could not find the coefficients pattern! No changes were made." + std::string());
+        show_warning(
+            std::string()
+            + "Could not find the coefficients pattern! No changes were made.\n\n"
+            + "If you've recently updated to SU14, you no longer need this patch. "
+            + "Otherwise, it may be because you have a modified executable.\n\n"
+            + "To get rid of this message, please remove MSFS2020.ARPC from your installation folder."
+        );
         return;
     }
 
