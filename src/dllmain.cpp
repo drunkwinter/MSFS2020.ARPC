@@ -163,8 +163,6 @@ void init() {
     }
 
     while (true) {
-        std::this_thread::sleep_for(std::chrono::milliseconds(100));
-
         if (hotkey_pressed) {
             hotkey_pressed = false;
             Patch::toggle();
@@ -179,6 +177,8 @@ void init() {
                 Patch::apply();
             }
         }
+
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
     }
 }
 
