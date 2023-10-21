@@ -82,22 +82,23 @@ HOLD_SHIFT = false ; Set to 'true' to use Shift as a modifier
 ## Development
 ### Prerequisites
 - [Build Tools for Visual Studio 2022](https://visualstudio.microsoft.com/downloads/?q=build+tools#:~:text=Build%20Tools%20for%20Visual%20Studio%202022)
+- [xmake](https://xmake.io/)
 
 ### Building
-Run with PowerShell:
+Run in terminal:
 ```powershell
-./build.ps1
+xmake
 ```
 > [!NOTE]
-> The build files are located in `./build/`
+> The build files are located in `build/`
 
 ## Credits
-##### ARPC
+#### ARPC
 GitHub Repository: https://github.com/FarukEroglu2048/ARPC
 
 MSFS Forum: https://forums.flightsimulator.com/t/replace-the-atmosphere-parameters-with-more-accurate-ones-from-arpc/607603/1
 
-##### Ultimate-ASI-Loader
+#### Ultimate-ASI-Loader
 `.asi` loader by [ThirteenAG](https://github.com/ThirteenAG)
 
 GitHub Repository: https://github.com/ThirteenAG/Ultimate-ASI-Loader
