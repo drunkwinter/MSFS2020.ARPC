@@ -9,9 +9,11 @@
 #include <atomic>
 #include <filesystem>
 #include <string>
+#include <thread>
 
-#include "Hooking.Patterns\Hooking.Patterns.h"
-#include "ini_file.hpp"
+#include <Hooking.Patterns.h>
+
+#include "IniFile.hpp"
 
 static HINSTANCE dll_module;
 

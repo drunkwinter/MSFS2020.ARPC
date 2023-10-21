@@ -31,8 +31,10 @@
 *.out
 *.app
 
-# Build
-build
-
-# Annoying file associations
+# .vscode
+.vscode/compile_commands.json
 .vscode/settings.json
+
+# Xmake cache
+.xmake/
+build/
