@@ -36,13 +36,13 @@ namespace Patch {
     }
 
     auto init(const Coefficients& custom_coefficients) {
-        auto pattern = hook::pattern("C3 64 2A 3A E3 8B F6 3A 07 42 B2 38");
+        auto pattern = hook::pattern("C7 25 16 3B E8 E5 C9 3A 00 00 00 00");
 
-        if (pattern.empty()) {
+        if (pattern.empty() || pattern.size() != 2) {
             return Status::ERROR_PATTERN_NOT_FOUND;
         }
 
-        ptr_coefficients = pattern.get_first<float>();
+        ptr_coefficients = pattern.get(1).get<float>();
         std::copy(ptr_coefficients, ptr_coefficients + 3, default_coefficients.begin());
         new_coefficients = custom_coefficients;
 
@@ -114,9 +114,9 @@ auto get_ini_path() {
 
 auto get_ini_coefficients(const IniFile& ini) {
     const Patch::Coefficients coefficients = {
-        ini.get("COEFFICIENTS", "RED", 0.002723f),
-        ini.get("COEFFICIENTS", "GREEN", 0.001831f),
-        ini.get("COEFFICIENTS", "BLUE", -0.000083096f),
+        ini.get("COEFFICIENTS", "RED", 0.002291070065f),
+        ini.get("COEFFICIENTS", "GREEN", 0.001540360041f),
+        ini.get("COEFFICIENTS", "BLUE", 0.0f),
     };
     return coefficients;
 }
@@ -131,9 +131,8 @@ void init() {
     if (status == Patch::ERROR_PATTERN_NOT_FOUND) {
         show_warning(
             std::string()
-            + "Could not find the coefficients pattern! No changes were made.\n\n"
-            + "If you've recently updated to SU14, you no longer need this patch. "
-            + "Otherwise, it may be because you have a modified executable.\n\n"
+            + "MSFS2020.ARPC is not compatible with the current game version. No changes were made.\n\n"
+            + "Reason: The scattering/ozone coefficients could not be found.\n\n"
             + "To get rid of this message, please remove MSFS2020.ARPC from your installation folder."
         );
         return;
