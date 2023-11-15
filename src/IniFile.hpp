@@ -8,14 +8,14 @@ public:
         if constexpr (std::is_same_v<T, std::string>) {
             char buffer[255];
             GetPrivateProfileStringA(section.data(), key.data(), default_value.data(), buffer, sizeof(buffer), ini_path);
-            std::string str{buffer};
-            if (const auto idx = str.find(" "); idx != str.npos) {
-                str.erase(idx, -1);
+            std::string string { buffer };
+            if (const auto idx = string.find(" "); idx != string.npos) {
+                string.erase(idx, -1);
             }
-            if (const auto idx = str.find(";"); idx != str.npos) {
-                str.erase(idx, -1);
+            if (const auto idx = string.find(";"); idx != string.npos) {
+                string.erase(idx, -1);
             }
-            return str;
+            return string;
         }
 
         if constexpr (std::is_same_v<T, bool>) {
