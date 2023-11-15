@@ -15,27 +15,24 @@
 
 #include "IniFile.hpp"
 
-static HINSTANCE dll_module;
-
-std::atomic hotkey_pressed(false);
-std::atomic ini_file_changed(false);
+static std::atomic hotkey_pressed { false };
+static std::atomic ini_file_changed { false };
 
 void show_warning(const std::string_view message) {
     MessageBoxA(nullptr, message.data(), "MSFS2020.ARPC", MB_OK | MB_ICONWARNING | MB_SYSTEMMODAL);
 }
 
 namespace Patch {
-    using Coefficients = std::array<float, 3>;
     enum Status { SUCCESS, ERROR_PATTERN_NOT_FOUND };
     auto is_enabled = false;
 
     namespace {
         float* ptr_coefficients;
-        Coefficients default_coefficients;
-        Coefficients new_coefficients;
+        std::array<float, 3> default_coefficients;
+        std::array<float, 3> new_coefficients;
     }
 
-    auto init(const Coefficients& custom_coefficients) {
+    auto init(const std::array<float, 3>& custom_coefficients) {
         auto pattern = hook::pattern("C7 25 16 3B E8 E5 C9 3A 00 00 00 00");
 
         if (pattern.empty() || pattern.size() != 2) {
@@ -49,7 +46,7 @@ namespace Patch {
         return Status::SUCCESS;
     }
 
-    void update(Coefficients custom_coefficients) {
+    void update(std::array<float, 3> custom_coefficients) {
         new_coefficients = custom_coefficients;
     }
 
@@ -106,34 +103,32 @@ void listen_for_filechange(const std::string_view ini_path) {
     }
 }
 
-auto get_ini_path() {
+std::array<float, 3> get_ini_coefficients(const IniFile& ini) {
+    return {
+        ini.get("COEFFICIENTS", "RED", 0.002291070065f),
+        ini.get("COEFFICIENTS", "GREEN", 0.001540360041f),
+        ini.get("COEFFICIENTS", "BLUE", 0.0f),
+    };
+}
+
+auto get_ini_path(HINSTANCE dll_module) {
     char module_path[MAX_PATH];
     GetModuleFileNameA(dll_module, module_path, sizeof(module_path));
     return std::filesystem::path(module_path).replace_extension(".ini").string();
 }
 
-auto get_ini_coefficients(const IniFile& ini) {
-    const Patch::Coefficients coefficients = {
-        ini.get("COEFFICIENTS", "RED", 0.002291070065f),
-        ini.get("COEFFICIENTS", "GREEN", 0.001540360041f),
-        ini.get("COEFFICIENTS", "BLUE", 0.0f),
-    };
-    return coefficients;
-}
+void init(HINSTANCE dll_module) {
+    const auto ini_path = get_ini_path(dll_module);
 
-void init() {
-    const auto ini_path = get_ini_path();
-
-    IniFile ini(ini_path);
+    IniFile ini { ini_path };
 
     const auto status = Patch::init(get_ini_coefficients(ini));
 
     if (status == Patch::ERROR_PATTERN_NOT_FOUND) {
         show_warning(
-            std::string()
-            + "MSFS2020.ARPC is not compatible with the current game version. No changes were made.\n\n"
-            + "Reason: The scattering/ozone coefficients could not be found.\n\n"
-            + "To get rid of this message, please remove MSFS2020.ARPC from your installation folder."
+            "MSFS2020.ARPC is not compatible with the current game version. No changes were made.\n\n"
+            "Reason: The scattering/ozone coefficients could not be found.\n\n"
+            "To get rid of this message, please remove MSFS2020.ARPC from your installation folder."
         );
         return;
     }
@@ -185,9 +180,8 @@ void init() {
 
 BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved) {
     if (fdwReason == DLL_PROCESS_ATTACH) {
-        dll_module = hinstDLL;
         DisableThreadLibraryCalls(hinstDLL);
-        std::thread main_thread(init);
+        std::thread main_thread(init, hinstDLL);
         main_thread.detach();
     }
 
