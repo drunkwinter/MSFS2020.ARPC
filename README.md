@@ -2,7 +2,7 @@
 > [!WARNING]
 > **This project is deprecated and is no longer maintained.**
 >
-> The issue solved by this project has been fixed in SU14, released on December 1, 2023.
+> The issue solved by this project has been fixed in SU14, released on December 5, 2023.
 
 MSFS2020.ARPC is an open-source patch that fixes the sky colors in Microsoft Flight Simulator 2020 (MSFS2020) by replacing atmospheric coefficients, resulting in a more realistic sky rendering.
 
